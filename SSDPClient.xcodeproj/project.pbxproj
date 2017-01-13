@@ -64,8 +64,8 @@
 			children = (
 				D8B13D2E1E2856B1005D98B6 /* SSDPClient */,
 				D8B13D391E2856B1005D98B6 /* SSDPClientTests */,
-				D8B13D2D1E2856B1005D98B6 /* Products */,
 				D8B13D461E285787005D98B6 /* Frameworks */,
+				D8B13D2D1E2856B1005D98B6 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -81,11 +81,9 @@
 		D8B13D2E1E2856B1005D98B6 /* SSDPClient */ = {
 			isa = PBXGroup;
 			children = (
-				D8B13D8F1E286E2C005D98B6 /* Device.swift */,
-				D8B13D911E287447005D98B6 /* Device+Parsing.swift */,
+				D8B13D931E28753C005D98B6 /* Models */,
+				D8B13D941E287544005D98B6 /* Supporting Files */,
 				D8B13D4A1E2857EF005D98B6 /* SSDPClient.swift */,
-				D8B13D301E2856B1005D98B6 /* Info.plist */,
-				D8B13D2F1E2856B1005D98B6 /* SSDPClient.h */,
 			);
 			path = SSDPClient;
 			sourceTree = "<group>";
@@ -93,8 +91,8 @@
 		D8B13D391E2856B1005D98B6 /* SSDPClientTests */ = {
 			isa = PBXGroup;
 			children = (
-				D8B13D3A1E2856B1005D98B6 /* SSDPClientTests.swift */,
 				D8B13D3C1E2856B1005D98B6 /* Info.plist */,
+				D8B13D3A1E2856B1005D98B6 /* SSDPClientTests.swift */,
 			);
 			path = SSDPClientTests;
 			sourceTree = "<group>";
@@ -105,6 +103,24 @@
 				D8B13D471E285787005D98B6 /* Socket.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D8B13D931E28753C005D98B6 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				D8B13D911E287447005D98B6 /* Device+Parsing.swift */,
+				D8B13D8F1E286E2C005D98B6 /* Device.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		D8B13D941E287544005D98B6 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D8B13D301E2856B1005D98B6 /* Info.plist */,
+				D8B13D2F1E2856B1005D98B6 /* SSDPClient.h */,
+			);
+			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -377,7 +393,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
-				INFOPLIST_FILE = SSDPClient/Info.plist;
+				INFOPLIST_FILE = "SSDPClient/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = uk.co.nathanwong.SSDPClient;
@@ -402,7 +418,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
-				INFOPLIST_FILE = SSDPClient/Info.plist;
+				INFOPLIST_FILE = "SSDPClient/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = uk.co.nathanwong.SSDPClient;
