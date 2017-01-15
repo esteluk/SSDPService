@@ -1,0 +1,19 @@
+excluded:
+  - Carthage
+  - Pods
+disabled_rules:
+  - type_name
+  - redundant_string_enum_value
+  - trailing_comma
+opt_in_rules:
+  - closure_spacing
+  - explicit_init
+  - force_unwrapping
+  - private_outlet
+  - overridden_super_call
+
+line_length: 180
+
+variable_name:
+  excluded: # excluded via string array
+    - id
