@@ -1,15 +1,15 @@
 //
-//  SSDPClientTests.swift
-//  SSDPClientTests
+//  SSDPServiceTests.swift
+//  SSDPServiceTests
 //
 //  Created by Nathan Wong on 13/01/2017.
 //  Copyright © 2017 Nathan Wong. All rights reserved.
 //
 
-@testable import SSDPClient
+@testable import SSDPService
 import XCTest
 
-class SSDPClientTests: XCTestCase {
+class SSDPServiceTests: XCTestCase {
 
     var anExpectation: XCTestExpectation? = nil
 
@@ -17,7 +17,7 @@ class SSDPClientTests: XCTestCase {
 
         anExpectation = expectation(description: "xx")
 
-        let client = SSDPClient(serviceType: "urn:schemas-upnp-org:device:ZonePlayer:1")
+        let client = SSDPService(serviceType: "urn:schemas-upnp-org:device:ZonePlayer:1")
         client.delegate = self
         client.search()
 
@@ -25,7 +25,7 @@ class SSDPClientTests: XCTestCase {
     }
 }
 
-extension SSDPClientTests: SSDPClientDelegate {
+extension SSDPServiceTests: SSDPServiceDelegate {
 
     func discoveredDevices(_ devices: [Device]) {
         print(devices)

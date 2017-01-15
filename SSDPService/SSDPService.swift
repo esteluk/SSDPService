@@ -1,6 +1,6 @@
 //
-//  SSDPClient.swift
-//  SSDPClient
+//  SSDPService.swift
+//  SSDPService
 //
 //  Created by Nathan Wong on 13/01/2017.
 //  Copyright © 2017 Nathan Wong. All rights reserved.
@@ -8,7 +8,7 @@
 
 import Socket
 
-public class SSDPClient {
+public class SSDPService {
 
     private let address: Socket.Address?
     private let datagram: String
@@ -16,10 +16,10 @@ public class SSDPClient {
     private static let ssdpIPAddress = "239.255.255.250"
     private static let ssdpPort: Int = 1900
 
-    public weak var delegate: SSDPClientDelegate?
+    public weak var delegate: SSDPServiceDelegate?
 
     public init(serviceType: String = "ssdp:all") {
-        address = Socket.createAddress(for: SSDPClient.ssdpIPAddress, on: Int32(SSDPClient.ssdpPort))
+        address = Socket.createAddress(for: SSDPService.ssdpIPAddress, on: Int32(SSDPService.ssdpPort))
         datagram = "M-SEARCH * HTTP/1.1\nHost: 239.255.255.250:1900\nMan: \"ssdp:discover\"\nST: \(serviceType)\n"
     }
 
@@ -44,9 +44,9 @@ public class SSDPClient {
                 var dummy = Data()
 
                 try socket.setBlocking(mode: false)
-                try socket.listen(on: SSDPClient.ssdpPort)
+                try socket.listen(on: SSDPService.ssdpPort)
                 try socket.write(from: data, to: address)
-                let (_, _) = try socket.listen(forMessage: &dummy, on: SSDPClient.ssdpPort) // ???
+                let (_, _) = try socket.listen(forMessage: &dummy, on: SSDPService.ssdpPort) // ???
 
                 repeat {
                     let sockets = try Socket.wait(for: [socket], timeout: UInt(timeout*1000))
@@ -71,7 +71,7 @@ public class SSDPClient {
     }
 }
 
-public protocol SSDPClientDelegate: class {
+public protocol SSDPServiceDelegate: class {
     func discoveredDevices(_ devices: [Device])
     func errorWhenDiscoveringDevices(_ error: Error)
 }

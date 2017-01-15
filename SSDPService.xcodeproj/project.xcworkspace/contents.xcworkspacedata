@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:SSDPClient.xcodeproj">
+      location = "self:/Users/nathan/Development/Projects/Sonos/SSDPClient/SSDPService.xcodeproj">
    </FileRef>
 </Workspace>
