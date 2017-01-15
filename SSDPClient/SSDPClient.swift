@@ -12,19 +12,15 @@ public class SSDPClient {
 
     private let address: Socket.Address?
     private let datagram: String
-    private let socket: Socket
 
     private static let ssdpIPAddress = "239.255.255.250"
     private static let ssdpPort: Int = 1900
 
     public weak var delegate: SSDPClientDelegate?
 
-    var results = [Device]()
-
     public init(serviceType: String = "ssdp:all") {
         address = Socket.createAddress(for: SSDPClient.ssdpIPAddress, on: Int32(SSDPClient.ssdpPort))
         datagram = "M-SEARCH * HTTP/1.1\nHost: 239.255.255.250:1900\nMan: \"ssdp:discover\"\nST: \(serviceType)\n"
-        socket = try! Socket.create(family: .inet, type: .datagram, proto: .udp)
     }
 
     /// Creates a network query for SSDP devices on the local network. Calls the delegate with a the devices that reply
@@ -41,28 +37,31 @@ public class SSDPClient {
         queue.async {
             do {
 
+                var results = [Device]()
+                let socket = try Socket.create(family: .inet, type: .datagram, proto: .udp)
+
                 let start = Date()
                 var dummy = Data()
 
-                try self.socket.setBlocking(mode: false)
-                try self.socket.listen(on: SSDPClient.ssdpPort)
-                try self.socket.write(from: data, to: address)
-                let (_, _) = try self.socket.listen(forMessage: &dummy, on: SSDPClient.ssdpPort) // ???
+                try socket.setBlocking(mode: false)
+                try socket.listen(on: SSDPClient.ssdpPort)
+                try socket.write(from: data, to: address)
+                let (_, _) = try socket.listen(forMessage: &dummy, on: SSDPClient.ssdpPort) // ???
 
                 repeat {
-                    let sockets = try Socket.wait(for: [self.socket], timeout: UInt(timeout*1000))
+                    let sockets = try Socket.wait(for: [socket], timeout: UInt(timeout*1000))
                     if let socket = sockets?.first {
                         var data = Data()
                         let (_, srcAddress) = try socket.readDatagram(into: &data)
                         guard let device = Device.parse(data: data, address: srcAddress) else {
                             continue
                         }
-                        self.results.append(device)
+                        results.append(device)
                     }
 
                 } while Date().timeIntervalSince(start) <= timeout
 
-                self.delegate?.discoveredDevices(self.results)
+                self.delegate?.discoveredDevices(results)
 
             } catch let error {
                 self.delegate?.errorWhenDiscoveringDevices(error)

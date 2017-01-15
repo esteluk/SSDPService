@@ -16,7 +16,7 @@ class SSDPClientTests: XCTestCase {
     func testFunction() {
 
         anExpectation = expectation(description: "xx")
-        
+
         let client = SSDPClient(serviceType: "urn:schemas-upnp-org:device:ZonePlayer:1")
         client.delegate = self
         client.search()
