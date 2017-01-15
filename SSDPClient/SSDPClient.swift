@@ -14,17 +14,23 @@ public class SSDPClient {
     private let datagram: String
     private let socket: Socket
 
-    private let ssdpIPAddress = "239.255.255.250"
-    private let ssdpPort: Int32 = 1900
+    private static let ssdpIPAddress = "239.255.255.250"
+    private static let ssdpPort: Int = 1900
+
+    public weak var delegate: SSDPClientDelegate?
 
     var results = [Device]()
 
     public init(serviceType: String = "ssdp:all") {
-        address = Socket.createAddress(for: ssdpIPAddress, on: ssdpPort)
+        address = Socket.createAddress(for: SSDPClient.ssdpIPAddress, on: Int32(SSDPClient.ssdpPort))
         datagram = "M-SEARCH * HTTP/1.1\nHost: 239.255.255.250:1900\nMan: \"ssdp:discover\"\nST: \(serviceType)\n"
         socket = try! Socket.create(family: .inet, type: .datagram, proto: .udp)
     }
 
+    /// Creates a network query for SSDP devices on the local network. Calls the delegate with a the devices that reply
+    /// before the timeout has expired.
+    ///
+    /// - Parameter timeout: the amount of time in seconds to wait for network responses to the SSDP query
     public func search(timeout: TimeInterval = 2.0) {
         guard let address = address,
             let data = datagram.data(using: .utf8) else {
@@ -32,36 +38,43 @@ public class SSDPClient {
         }
 
         let queue = DispatchQueue.global(qos: .userInteractive)
-        queue.sync {
+        queue.async {
             do {
 
                 let start = Date()
+                var dummy = Data()
+
+                try self.socket.setBlocking(mode: false)
+                try self.socket.listen(on: SSDPClient.ssdpPort)
                 try self.socket.write(from: data, to: address)
+                let (_, _) = try self.socket.listen(forMessage: &dummy, on: SSDPClient.ssdpPort) // ???
 
                 repeat {
-                    var result = Data()
-                    let (_, srcAddress) = try self.socket.readDatagram(into: &result)
-
-                    guard let device = Device.parse(data: result, address: srcAddress) else {
-                        continue
+                    let sockets = try Socket.wait(for: [self.socket], timeout: UInt(timeout*1000))
+                    if let socket = sockets?.first {
+                        var data = Data()
+                        let (_, srcAddress) = try socket.readDatagram(into: &data)
+                        guard let device = Device.parse(data: data, address: srcAddress) else {
+                            continue
+                        }
+                        self.results.append(device)
                     }
-                    print(device)
-                    self.results.append(device)
-                    self.notify()
 
                 } while Date().timeIntervalSince(start) <= timeout
 
+                self.delegate?.discoveredDevices(self.results)
 
             } catch let error {
-                print(error.localizedDescription)
+                self.delegate?.errorWhenDiscoveringDevices(error)
             }
         }
 
     }
+}
 
-    private func notify() {
-        print("\(results.count)")
-    }
+public protocol SSDPClientDelegate: class {
+    func discoveredDevices(_ devices: [Device])
+    func errorWhenDiscoveringDevices(_ error: Error)
 }
 
 // -9992 address already in use (Sonos app open?)

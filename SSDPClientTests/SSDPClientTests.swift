@@ -10,11 +10,29 @@
 import XCTest
 
 class SSDPClientTests: XCTestCase {
+
+    var anExpectation: XCTestExpectation? = nil
+
     func testFunction() {
+
+        anExpectation = expectation(description: "xx")
+        
         let client = SSDPClient(serviceType: "urn:schemas-upnp-org:device:ZonePlayer:1")
+        client.delegate = self
         client.search()
 
-        let anExpectation = expectation(description: "xx")
         waitForExpectations(timeout: 100, handler: nil)
+    }
+}
+
+extension SSDPClientTests: SSDPClientDelegate {
+
+    func discoveredDevices(_ devices: [Device]) {
+        print(devices)
+        anExpectation?.fulfill()
+    }
+
+    func errorWhenDiscoveringDevices(_ error: Error) {
+        print(error.localizedDescription)
     }
 }

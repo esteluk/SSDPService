@@ -6,10 +6,10 @@
 //  Copyright © 2017 Nathan Wong. All rights reserved.
 //
 
-struct Device {
-    let ipAddress: String
-    let descriptionUrl: String
-    let server: String
-    let serviceType: String
-    let usn: String
+public struct Device {
+    public let ipAddress: String
+    public let descriptionUrl: String
+    public let server: String
+    public let serviceType: String
+    public let usn: String
 }
